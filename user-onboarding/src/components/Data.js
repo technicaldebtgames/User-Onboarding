@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 import './Data.css';
 
 export default function Data(props) {
-  const { details } = props
+  const { details } = props;
 
   if (!details) {
     return <h3>Collecting data...</h3>
-  }
+  };
 
   return (
     <div className='data-container'>
@@ -15,4 +15,4 @@ export default function Data(props) {
       <p>Role: {details.role}</p>
     </div>
   )
-}
+};
