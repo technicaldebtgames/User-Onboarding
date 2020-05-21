@@ -51,6 +51,7 @@ function App() {
          });
   };
 
+  //sent to onChange on elements
   const onInputChange = event => {
 
     const {name} = event.target;
@@ -73,20 +74,27 @@ function App() {
         });
       });
 
+
+      
+    //I think this needs spun out into another function perhaps to solve the inverted validation checkbox error?
     if (type === 'checkbox'){
+
       setFormValues({...formValues,
-        [name]:!(/true/i).test(value)});
+        [name]:(/false/i).test(value)}); // this is used to convert a string to a bool by comparing the fake bool-string given through value, via regex comparison
+
     }
     else {
-      setFormValues({...formValues, 
+
+      setFormValues({...formValues, // the non-checkbox vals
         [name]:value});
+    
     }
 
 // Incorrect output for some reason. Is this some weird javascript event timing 
-// thing or something? Unsure.
+// thing or something? Unsure. Tied in to validation issue?
 //    
-//    console.log("formValues after if: ");
-//    console.log(formValues.tos);
+    console.log("formValues after if: ");
+    console.log(formValues.tos);
 
   }
 
@@ -97,13 +105,13 @@ function App() {
                      postNewUsers(newUsers);
   }
 
-  //validation effect
-  useEffect(() => {
-    formSchema.isValid(formValues)
-              .then(valid => {
-                setDisabled(!valid);
-              });
-  }, [formValues]);
+    //validation effect
+    useEffect(() => {
+      formSchema.isValid(formValues)
+                .then(valid => {
+                  setDisabled(!valid);
+                });
+    }, [formValues]);
 
   //return component elements
   return (

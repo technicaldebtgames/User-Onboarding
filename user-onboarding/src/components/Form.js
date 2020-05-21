@@ -51,7 +51,7 @@ export default function Form(props) {
                     <input type='checkbox' 
                            name='tos' 
                            value={values.tos} 
-                           onClick={onInputChange}></input>
+                           onChange={onInputChange}></input>
                     I've read the Terms of Service
                 </label>
             </div>

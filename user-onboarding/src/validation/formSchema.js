@@ -1,5 +1,6 @@
 import * as yup from 'yup'
 
+//form validation
 const formSchema = yup.object().shape({
     name: yup.string()
              .trim()
@@ -11,9 +12,8 @@ const formSchema = yup.object().shape({
               .required('Please enter an email address.'),
     role: yup.string()
              .required('Please select a role.'),
-    tos: yup.boolean()
-            .oneOf([true], 'Please select that you have read and understand the Terms of Service.')
-            .required('TOS required.')
+    tos: yup.bool()
+            .oneOf([true], 'Please select that you have read and understand the Terms of Service.') //I don't think this is the problem, but I dunno.
     
 });
 
