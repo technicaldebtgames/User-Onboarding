@@ -75,17 +75,14 @@ function App() {
 
     if (type === 'checkbox'){
       setFormValues({...formValues,
-      [name]:!(/true/i).test(value)});
-      console.log("[name] = ");
-      console.log([name]);
-      console.log(value);
+        [name]:!(/true/i).test(value)});
     }
     else {
       setFormValues({...formValues, 
-        [name]:value});      // !(/true/i).test(value)});
+        [name]:value});
     }
 
-// Incorrect output for some reason.Is this some weird javascript event timing 
+// Incorrect output for some reason. Is this some weird javascript event timing 
 // thing or something? Unsure.
 //    
 //    console.log("formValues after if: ");
@@ -95,32 +92,20 @@ function App() {
 
   const onSubmit = event => {
     event.preventDefault();
-    /*if (!formValues.name.trim() || 
-        !formValues.email.trim() || 
-        !formValues.role ||
-        !formValues.tos) //check if error, also p sure unneeded
-      {return};*/
     const newUsers = {...formValues, 
                      id:uuid()};
                      postNewUsers(newUsers);
   }
 
-  /*useEffect(() => { // needed? might just need post
-    getUsers();
-  }, []);*/
-
+  //validation effect
   useEffect(() => {
     formSchema.isValid(formValues)
               .then(valid => {
                 setDisabled(!valid);
               });
   }, [formValues]);
-  
-  console.log("disabled =")
-  console.log(disabled);
 
-  //console.log(users);
-
+  //return component elements
   return (
     <div className='app-container'>
       <header><h1>Team Builder</h1></header>

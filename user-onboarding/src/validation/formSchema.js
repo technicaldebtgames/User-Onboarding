@@ -12,8 +12,8 @@ const formSchema = yup.object().shape({
     role: yup.string()
              .required('Please select a role.'),
     tos: yup.boolean()
-            .oneOf([false], 'Please select that you have read and understand the Terms of Service.')
-            .required('Please select that you have read and understand the Terms of Service.')
+            .oneOf([true], 'Please select that you have read and understand the Terms of Service.')
+            .required('TOS required.')
     
 });
 
