@@ -19,7 +19,7 @@ const initialFormErrors = {
   name: '',
   email: '',
   role: '',
-  tos: false
+  tos: ''
 };
 
 const initialUsers = [];
@@ -28,6 +28,8 @@ const initialDisabled = true;
 
 // primary app function
 function App() {
+
+  console.log('APP START')
 
   const [users, setUsers] = useState(initialUsers);
   const [formValues, setFormValues] = useState(initialFormValues);
@@ -51,33 +53,79 @@ function App() {
          });
   };
 
+  const onCheckboxChange = event => {
+
+    const {name} = event.target;
+    const {checked} = event.target;
+
+    yup
+    .reach(formSchema, name)
+    // we can then run validate using the value
+    .validate(checked)
+    .then(valid => {
+      // happy path, we can clear the error message
+      setFormErrors({
+        ...formErrors,
+        [name]: ''
+      })
+    })
+    .catch(error => {
+      // sad path, does not validate so we set the error message to the message 
+      // returned from yup (that we created in our schema)
+      setFormErrors({
+        ...formErrors,
+        [name]: error.errors[0]
+      })
+    })
+
+    setFormValues({
+      ...formValues,
+      [name]: checked // ?
+    });
+
+  }
+
   //sent to onChange on elements
   const onInputChange = event => {
 
     const {name} = event.target;
     const {value} = event.target;
-    const {type} = event.target;
+    //const {type} = event.target;
+
+    //if (type === 'checkbox') {
+      //console.log("name value type");
+      //console.log(name)
+      //console.log(value)
+      //console.log(type)
+    //}
+
+    //debugger
 
     yup
       .reach(formSchema, name)
       .validate(value)
       .then(valid => {
+        //debugger
         setFormErrors({
           ...formErrors,
-          [name]: ""
+          [name]: ''
         });
+        //debugger
       })
       .catch(error => {
+        //debugger
         setFormErrors({
           ...formErrors,
           [name]: error.errors[0]
         });
+        //debugger
       });
 
-
+      setFormValues({...formValues,
+        [name]:value});
       
     //I think this needs spun out into another function perhaps to solve the inverted validation checkbox error?
-    if (type === 'checkbox'){
+/*    if (type === 'checkbox'){
 
       setFormValues({...formValues,
         [name]:(/false/i).test(value)}); // this is used to convert a string to a bool by comparing the fake bool-string given through value, via regex comparison
@@ -88,13 +136,13 @@ function App() {
       setFormValues({...formValues, // the non-checkbox vals
         [name]:value});
     
-    }
+    }*/
 
 // Incorrect output for some reason. Is this some weird javascript event timing 
 // thing or something? Unsure. Tied in to validation issue?
 //    
     console.log("formValues after if: ");
-    console.log(formValues.tos);
+    console.log(formValues);
 
   }
 
@@ -109,6 +157,7 @@ function App() {
     useEffect(() => {
       formSchema.isValid(formValues)
                 .then(valid => {
+                  //debugger
                   setDisabled(!valid);
                 });
     }, [formValues]);
@@ -121,7 +170,8 @@ function App() {
             onInputChange={onInputChange} 
             onSubmit={onSubmit} 
             disabled={disabled}
-            errors={formErrors}/>
+            errors={formErrors}
+            onCheckboxChange={onCheckboxChange}/>
       {
         users.map(d => {
           return (

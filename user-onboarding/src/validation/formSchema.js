@@ -13,7 +13,9 @@ const formSchema = yup.object().shape({
     role: yup.string()
              .required('Please select a role.'),
     tos: yup.bool()
-            .oneOf([true], 'Please select that you have read and understand the Terms of Service.') //I don't think this is the problem, but I dunno.
+              .oneOf([true], 'Please select that you have read and understood the Terms of Service.')
+              //.matches('off', 'Please select that you have read and understand the Terms of Service.') //I don't think this is the problem, but I dunno.
+            //.required("ToS Req")
     
 });
 

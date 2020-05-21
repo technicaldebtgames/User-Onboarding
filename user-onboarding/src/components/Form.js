@@ -2,7 +2,7 @@ import React from 'react';
 import './Form.css';
 
 export default function Form(props) {
-    const {values, onInputChange, onSubmit, disabled, errors} = props;
+    const {values, onInputChange, onSubmit, disabled, errors, onCheckboxChange} = props;
 
     return (
         <form className='form-container' 
@@ -50,8 +50,9 @@ export default function Form(props) {
                 <label>
                     <input type='checkbox' 
                            name='tos' 
-                           value={values.tos} 
-                           onChange={onInputChange}></input>
+                           //defaultChecked={values.tos} 
+                           checked={values.tos}
+                           onChange={onCheckboxChange}></input>
                     I've read the Terms of Service
                 </label>
             </div>
