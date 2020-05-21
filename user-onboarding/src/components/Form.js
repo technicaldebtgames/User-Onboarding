@@ -47,6 +47,13 @@ export default function Form(props) {
                         <option value='Lead Project Designer, Existential Dread Initiative'>Lead Project Designer, Existential Dread Initiative</option>
                     </select>
                 </label>
+                <label>
+                    <input type='checkbox' 
+                           name='tos' 
+                           value={values.tos} 
+                           onClick={onInputChange}></input>
+                    I've read the Terms of Service
+                </label>
             </div>
         </form>
     )

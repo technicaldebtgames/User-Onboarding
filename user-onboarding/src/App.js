@@ -31,17 +31,43 @@ function App() {
     const {name} = event.target;
     const {value} = event.target;
 
-    //yup val
+// This console.log appears to give the wrong answer, even though the correct answer
+// is stored in state according to the devtools.components in chrome.
+//
+// Is this some weird javascript event timing thing or something? Unsure.
+//    
+//    console.log("formValues before if: ");
+//    console.log(formValues.tos);
 
-    setFormValues({...formValues, 
-                   [name]:value});
+    //yup val here or below?
+
+    if (event.target.type === 'checkbox'){ // should technically invert the order of these
+      setFormValues({...formValues,        // since it is more likely it WON'T be a checkbox
+      [name]:!formValues.tos});            // but this doesn't happen often anyway so who cares
+    }
+    else {
+      setFormValues({...formValues, 
+        [name]:value});
+    }
+
+    //yup val here or above?
+
+// This console.log appears to give the wrong answer, even though the correct answer
+// is stored in state according to the devtools.components in chrome.
+//
+// Is this some weird javascript event timing thing or something? Unsure.
+//    
+//    console.log("formValues after if: ");
+//    console.log(formValues.tos);
+
   }
 
   const onSubmit = event => {
     event.preventDefault();
     if (!formValues.name.trim() || 
         !formValues.email.trim() || 
-        !formValues.role.trim())
+        !formValues.role.trim() ||
+        !formValues.tos) //check if error
       {return};
     const newData = {...formValues, 
                      id:uuid()};
