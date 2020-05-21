@@ -11,8 +11,10 @@ const formSchema = yup.object().shape({
               .required('Please enter an email address.'),
     role: yup.string()
              .required('Please select a role.'),
-    tos: yup.string()
+    tos: yup.boolean()
+            .oneOf([false], 'Please select that you have read and understand the Terms of Service.')
             .required('Please select that you have read and understand the Terms of Service.')
+    
 });
 
 export default formSchema;

@@ -3,34 +3,11 @@ import {v4 as uuid} from 'uuid';
 import axios from 'axios';
 import * as yup from 'yup'; 
 import Form from './components/Form.js';
-import Data from './components/Data.js';
+import Users from './components/Users.js';
 import formSchema from './validation/formSchema';
 import './App.css';
 
-const initialData = [
-  {
-    id: uuid(),
-    name: 'Bartholymue',
-    email: 'b.ridiculous@aol.com',
-    role: 'Dread Excretion Collector',
-    tos: true
-  },
-  {
-    id: uuid(),
-    name: 'Jerry The Rat',
-    email: 'sk8rbro@gmail.gov',
-    role: 'Test Subject',
-    tos: true
-  },
-  {
-    id: uuid(),
-    name: 'Dr. Felicia Applebaum',
-    email: 'fna43@pitt.edu',
-    role: 'Lead Project Designer, Existential Dread Initiative',
-    tos: true
-  }
-];
-
+// init values
 const initialFormValues = {
   name: '',
   email: '',
@@ -45,57 +22,71 @@ const initialFormErrors = {
   tos: false
 };
 
+const initialUsers = [];
+
 const initialDisabled = true;
 
+// primary app function
 function App() {
 
-  const [data, setData] = useState(initialData);
+  const [users, setUsers] = useState(initialUsers);
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState(initialFormErrors);
   const [disabled, setDisabled] = useState(initialDisabled);
 
-  const getData = () => { // needed? might just need post?
-    axios.get('https://reqres.in/api/users')
+  //async api call that actually just gives us what we gave it
+  const postNewUsers = newUsers => {
+    axios.post('https://reqres.in/api/users', newUsers)
          .then(result => {
-           setData(result.data);
+           //console.log('result.data in postNewUsers:');
+           //console.log(result.data);
+           setUsers([result.data, ...users]);
          })
          .catch(err => {
-           console.log("ERROR in or during getData request.");
+           console.log("ERROR in or during postNewUsers request.");
          })
          .finally(() => {
-           console.log('getData API request complete.');
-         })
+           //setUsers(initialUsers);
+           console.log('postNewUsers API request and form reset complete.');
+         });
   };
-
-  const postNewData = newData => {
-
-  }
 
   const onInputChange = event => {
 
     const {name} = event.target;
     const {value} = event.target;
+    const {type} = event.target;
 
-//    console.log("formValues before if: ");
-//    console.log(formValues.tos);
+    yup
+      .reach(formSchema, name)
+      .validate(value)
+      .then(valid => {
+        setFormErrors({
+          ...formErrors,
+          [name]: ""
+        });
+      })
+      .catch(error => {
+        setFormErrors({
+          ...formErrors,
+          [name]: error.errors[0]
+        });
+      });
 
-    //yup val here or below?
-
-    if (event.target.type === 'checkbox'){ // should technically invert the order of these
-      setFormValues({...formValues,        // since it is more likely it WON'T be a checkbox
-      [name]:!formValues.tos});            // but this doesn't happen often anyway so who cares
+    if (type === 'checkbox'){
+      setFormValues({...formValues,
+      [name]:!(/true/i).test(value)});
+      console.log("[name] = ");
+      console.log([name]);
+      console.log(value);
     }
     else {
       setFormValues({...formValues, 
-        [name]:value});
+        [name]:value});      // !(/true/i).test(value)});
     }
 
-    //yup val here or above?
-
-// This console.log appears to give the wrong answer, even though the correct answer
-// is stored in state according to the devtools.components in chrome.
-//
-// Is this some weird javascript event timing thing or something? Unsure.
+// Incorrect output for some reason.Is this some weird javascript event timing 
+// thing or something? Unsure.
 //    
 //    console.log("formValues after if: ");
 //    console.log(formValues.tos);
@@ -104,27 +95,31 @@ function App() {
 
   const onSubmit = event => {
     event.preventDefault();
-    if (!formValues.name.trim() || 
+    /*if (!formValues.name.trim() || 
         !formValues.email.trim() || 
-        !formValues.role.trim() ||
+        !formValues.role ||
         !formValues.tos) //check if error, also p sure unneeded
-      {return};
-    const newData = {...formValues, 
+      {return};*/
+    const newUsers = {...formValues, 
                      id:uuid()};
-    setData([newData, 
-            ...data]);
-    setFormValues(initialFormValues);
+                     postNewUsers(newUsers);
   }
 
   /*useEffect(() => { // needed? might just need post
-    getData();
+    getUsers();
   }, []);*/
 
-  /*useEffect(() => {
+  useEffect(() => {
+    formSchema.isValid(formValues)
+              .then(valid => {
+                setDisabled(!valid);
+              });
+  }, [formValues]);
+  
+  console.log("disabled =")
+  console.log(disabled);
 
-  }, []);*/
-
-  console.log(data);
+  //console.log(users);
 
   return (
     <div className='app-container'>
@@ -135,9 +130,9 @@ function App() {
             disabled={disabled}
             errors={formErrors}/>
       {
-        data.map(d => {
+        users.map(d => {
           return (
-            <Data key={d.id} 
+            <Users key={d.id} 
                   details={d}/>
           );
         })
